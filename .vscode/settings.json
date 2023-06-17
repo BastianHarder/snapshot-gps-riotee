@@ -1,9 +1,10 @@
 {
-    "sdkRoot": "C:/PATH/TO/SDK",
+    "sdkRoot": "C:/Libraries/riotee_sdk_v0.0.3",
     "operSys": "Win32",
-    "gnuInstallRoot": "",
+    "gnuInstallRoot": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.2 rel1/bin/",
     "files.associations": {
         "type_traits": "c",
+        "riotee_spic.h": "c"
     },
     "editor.formatOnSave": true,
 }

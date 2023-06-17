@@ -1,0 +1,6 @@
+#ifndef __SNAPSHOT_TRANSMITTER_H_
+#define __SNAPSHOT_TRANSMITTER_H_
+
+
+
+#endif /* __SNAPSHOT_TRANSMITTER_H_ */
