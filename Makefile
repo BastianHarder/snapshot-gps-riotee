@@ -15,8 +15,8 @@ INC_FOLDERS += \
 SRC_FILES = \
   $(PRJ_ROOT)/src/main.c \
   $(PRJ_ROOT)/src/max2769.c \
+  $(PRJ_ROOT)/src/snapshot_handler.c \
   $(PRJ_ROOT)/src/spis.c \
-  $(PRJ_ROOT)/src/snapshot_transmitter.c \
   $(PRJ_ROOT)/src/timestamping.c 
 
 include $(SDK_ROOT)/Makefile

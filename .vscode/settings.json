@@ -4,7 +4,10 @@
     "gnuInstallRoot": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.2 rel1/bin/",
     "files.associations": {
         "type_traits": "c",
-        "riotee_spic.h": "c"
+        "riotee_spic.h": "c",
+        "riotee_timing.h": "c",
+        "riotee.h": "c",
+        "printf.h": "c"
     },
     "editor.formatOnSave": true,
 }

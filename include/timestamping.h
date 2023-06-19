@@ -4,7 +4,20 @@
 #include <stdint.h>
 #include <time.h>
 
-int get_timestamp(struct tm* timestamp);
-void get_time_difference(time_t time2, time_t time1);
+//structure definition for timestamping snapshots
+typedef struct {
+  uint8_t hundredths;   
+  uint8_t second;
+  uint8_t minute;
+  uint8_t hour;
+  uint8_t day;
+  uint8_t month;
+  uint8_t year;
+  uint8_t wday; 
+} timestamp_t;
+
+int get_timestamp(timestamp_t *timestamp);
+int reset_rtc();
+int rtc_init();
 
 #endif /* __TIMESTAMPING_H_ */

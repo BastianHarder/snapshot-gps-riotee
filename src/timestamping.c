@@ -3,18 +3,43 @@
 #include <time.h>
 #include "riotee_am1805.h"
 
-int get_timestamp(struct tm* timestamp)
+int get_timestamp(timestamp_t *timestamp)
 {
-    int res = 0;
-    res = am1805_init();
-    res += am1805_get_datetime(timestamp);
-    return res;
+    int result = 0;
+    struct tm t;
+    result += am1805_get_datetime_and_hundredths(&t);
+    timestamp->hundredths = t.tm_isdst;
+    timestamp->second = t.tm_sec;
+    timestamp->minute = t.tm_min;
+    timestamp->hour = t.tm_hour;
+    timestamp->day = t.tm_mday;
+    timestamp->month = t.tm_mon;
+    timestamp->year = t.tm_year;
+    timestamp->wday = t.tm_wday;
+    return result;
 }
 
-//Function that calculate time1 - time2
-// https://www.tutorialspoint.com/c_standard_library/c_function_difftime.htm
-void get_time_difference(time_t time2, time_t time1)
+int reset_rtc()
 {
-    difftime (time2, time1);
+    int result = 0;
+    struct tm init_time =  {.tm_sec = 0,
+                            .tm_min = 0,
+                            .tm_hour = 0,
+                            .tm_mday = 0,
+                            .tm_mon = 0,
+                            .tm_year = 0,
+                            .tm_wday = 0,
+                            .tm_yday = 0,
+                            .tm_isdst = 0};
+    //Establish connection to RTC
+    result += am1805_init();
+    //Initialize RTC with all zeros
+    result += am1805_set_datetime(&init_time);
+    return result;
+}
+
+int rtc_init()
+{
+    return am1805_init();
 }
 

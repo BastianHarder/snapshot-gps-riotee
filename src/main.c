@@ -1,18 +1,22 @@
-
 #include "riotee.h"
 #include "riotee_gpio.h"
 #include "riotee_timing.h"
 #include "riotee_spic.h"
 #include "riotee_spis.h"
 #include "max2769.h"
+#include "snapshot_handler.h"
+#include "printf.h"
 
-//Define the size of snapshots to be received from max2769 in bytes
-//Snapshot size depends on sampling frequency, snapshot duration and adc resolution
-#define SNAPSHOT_SIZE_BYTES 6138    // 4092000 Hz x 0.012s / 8 = 6138 Bytes
-
-//Global buffer to store snapshot
+//Global buffer to store gnss snapshot
 uint8_t snapshot_buf[SNAPSHOT_SIZE_BYTES] __VOLATILE_UNINITIALIZED;
+uint16_t snapshot_id = 0;
 
+//Global structures to store timestamps
+timestamp_t capture_timestamp;
+timestamp_t transmit_timestamp;
+
+//Define Device ID for communication with base station
+const uint32_t dev_id = 0x00000065;
 
 const static riotee_spic_cfg_t spic_cfg = {.mode = SPIC_MODE0_CPOL0_CPHA0,
                                            .frequency = SPIC_FREQUENCY_K500,
@@ -33,33 +37,60 @@ const static max2769_cfg_t max2769_cfg = {.snapshot_size_bytes = SNAPSHOT_SIZE_B
                                           .min_power_option = MAX2769_MIN_POWER_OPTION_DISABLE,
                                           .pin_pe = PIN_D7};
 
-
-
+/* This gets called one time after flashing new firmware */
+void bootstrap_callback(void) {
+  printf_("reset_rtc result: %i \n", reset_rtc());
+}
 
 /* This gets called after every reset */
 void reset_callback(void) {
-  riotee_gpio_cfg_output(PIN_LED_CTRL);
   //Initialize spi master to configure max2769
   spic_init(&spic_cfg);
   //Initialize spi slave for receiving serial data from max2769
   spis_init(&spis_cfg);
-  //Initialize for max2769 usage
+  //Initialize global variables and pins for max2769 usage
   max2769_init(&max2769_cfg);
+  //Initialize BLE Frontend for communication with base station
+  init_snapshot_transmitter(dev_id);
+  //Check that RTC is available
+  printf_("rtc_init result: %i \n", rtc_init());
 }
 
 /* This gets called when capacitor voltage gets low */
 void turnoff_callback(void) {
-  riotee_gpio_clear(PIN_LED_CTRL);
   disable_max2769(&max2769_cfg);
 }
 
 int main(void) {
   for (;;) {
+    //Capture a GNSS snapshot and take a timestamp
+    // riotee_wait_cap_charged();
+    // get_timestamped_snapshot(&max2769_cfg, snapshot_buf, &capture_timestamp);
+    //Take another timestamp and send both timestamps to base station to allow recalculation of snapshot caputre time
+    // riotee_wait_cap_charged();
+    // take_timestamp_and_send_first_frame(&capture_timestamp, &transmit_timestamp, snapshot_id);
+    // //Divide snapshot into several frames and send them one after another
+    // for(uint16_t frame_number=1;frame_number<TOTAL_NUMBER_FRAMES;frame_number++)
+    // {
+    //   riotee_wait_cap_charged();
+    //   send_snapshot_data_frame(snapshot_buf, frame_number, snapshot_id);
+    // }
     riotee_wait_cap_charged();
-    //riotee_gpio_set(PIN_LED_CTRL);
-    enable_max2769(&max2769_cfg);
-    configure_max2769(&max2769_cfg);
-    max2769_capture_snapshot(&max2769_cfg, snapshot_buf);
-    disable_max2769(&max2769_cfg);
+    printf_("get timestamp result: %i \n", get_timestamp(&transmit_timestamp));
+    
+    printf_("Timestamp: ");
+    printf_("%hu, %hu, %hu, %hu, %hu, %hu, %hu, %hu \n",
+                           transmit_timestamp.wday,
+                           transmit_timestamp.year, 
+                           transmit_timestamp.month, 
+                           transmit_timestamp.day, 
+                           transmit_timestamp.hour, 
+                           transmit_timestamp.minute, 
+                           transmit_timestamp.second,
+                           transmit_timestamp.hundredths);
+    //Next snapshot gets incremented ID
+    printf_("Snapshot ID: %d \n", snapshot_id);
+    snapshot_id++;
+    riotee_sleep_ms(1500);
   }
 }
