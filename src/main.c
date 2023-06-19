@@ -39,7 +39,7 @@ const static max2769_cfg_t max2769_cfg = {.snapshot_size_bytes = SNAPSHOT_SIZE_B
 
 /* This gets called one time after flashing new firmware */
 void bootstrap_callback(void) {
-  printf_("reset_rtc result: %i \n", reset_rtc());
+  reset_rtc();
 }
 
 /* This gets called after every reset */
@@ -53,7 +53,7 @@ void reset_callback(void) {
   //Initialize BLE Frontend for communication with base station
   init_snapshot_transmitter(dev_id);
   //Check that RTC is available
-  printf_("rtc_init result: %i \n", rtc_init());
+  rtc_init();
 }
 
 /* This gets called when capacitor voltage gets low */
@@ -64,9 +64,22 @@ void turnoff_callback(void) {
 int main(void) {
   for (;;) {
     //Capture a GNSS snapshot and take a timestamp
+    riotee_wait_cap_charged();
+    get_timestamped_snapshot(&max2769_cfg, snapshot_buf, &capture_timestamp);
+    riotee_wait_cap_charged();
+    for(int k = 0; k < max2769_cfg.snapshot_size_bytes; k++)
+	  {
+		  printf_("%02X\n", snapshot_buf[k]);
+	  }
+
+    // //For Testpurpose write incrementing numbers in snapshot buffer and take timestamp
     // riotee_wait_cap_charged();
-    // get_timestamped_snapshot(&max2769_cfg, snapshot_buf, &capture_timestamp);
-    //Take another timestamp and send both timestamps to base station to allow recalculation of snapshot caputre time
+    // get_timestamp(&capture_timestamp);
+    // for(int k=0;k<SNAPSHOT_SIZE_BYTES;k++)
+    // {
+    //   snapshot_buf[k] = (uint8_t) k%256;
+    // }
+    // //Take another timestamp and send both timestamps to base station to allow recalculation of snapshot caputre time
     // riotee_wait_cap_charged();
     // take_timestamp_and_send_first_frame(&capture_timestamp, &transmit_timestamp, snapshot_id);
     // //Divide snapshot into several frames and send them one after another
@@ -75,22 +88,7 @@ int main(void) {
     //   riotee_wait_cap_charged();
     //   send_snapshot_data_frame(snapshot_buf, frame_number, snapshot_id);
     // }
-    riotee_wait_cap_charged();
-    printf_("get timestamp result: %i \n", get_timestamp(&transmit_timestamp));
-    
-    printf_("Timestamp: ");
-    printf_("%hu, %hu, %hu, %hu, %hu, %hu, %hu, %hu \n",
-                           transmit_timestamp.wday,
-                           transmit_timestamp.year, 
-                           transmit_timestamp.month, 
-                           transmit_timestamp.day, 
-                           transmit_timestamp.hour, 
-                           transmit_timestamp.minute, 
-                           transmit_timestamp.second,
-                           transmit_timestamp.hundredths);
     //Next snapshot gets incremented ID
-    printf_("Snapshot ID: %d \n", snapshot_id);
     snapshot_id++;
-    riotee_sleep_ms(1500);
   }
 }

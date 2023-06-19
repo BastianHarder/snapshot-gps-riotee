@@ -32,14 +32,7 @@ static const size_t n_rx = 0;       //no data is expected to be received from ma
 
 //global structure to track max2769 register status as max2769 registers cannot be read
 //This initialisation does not work!!! Initialisation is done again in max2769_init(..)
-static max2769_registers_t max2769_reg =  {.conf1_value = MAX2769_CONF1_DEF,
-                                           .conf2_value = MAX2769_CONF2_DEF,
-                                           .conf3_value = MAX2769_CONF3_DEF,
-                                           .pllconf_value = MAX2769_PLLCONF_DEF,
-                                           .pllidr_value = MAX2769_PLLIDR_DEF,
-                                           .fdiv_value = MAX2769_FDIV_DEF,
-                                           .strm_value = MAX2769_STRM_DEF,
-                                           .cfdr_value = MAX2769_CFDR_DEF};
+static max2769_registers_t max2769_reg;
 
 //Function that configures all gpios that are connected to max2769 
 //This functions should be executed once after system reset
@@ -97,11 +90,7 @@ void configure_max2769(const max2769_cfg_t *cfg)
 //Note: max2769 must be enabled and configured in advance
 void max2769_capture_snapshot(const max2769_cfg_t *max2769_cfg, uint8_t* snapshot_buf)
 {
-    spis_receive(snapshot_buf, max2769_cfg->snapshot_size_bytes);
-	for(int k = 0; k < max2769_cfg->snapshot_size_bytes; k++)
-	{
-		printf_("%02X\n", snapshot_buf[k]);
-	}	
+    spis_receive(snapshot_buf, max2769_cfg->snapshot_size_bytes);	
 }
 
 //Function that implements writing a 28bit value to a max2769 register with a 4 bit address
