@@ -64,30 +64,30 @@ void turnoff_callback(void) {
 int main(void) {
   for (;;) {
     //Capture a GNSS snapshot and take a timestamp
-    riotee_wait_cap_charged();
-    get_timestamped_snapshot(&max2769_cfg, snapshot_buf, &capture_timestamp);
-    riotee_wait_cap_charged();
-    for(int k = 0; k < max2769_cfg.snapshot_size_bytes; k++)
-	  {
-		  printf_("%02X\n", snapshot_buf[k]);
-	  }
+    // riotee_wait_cap_charged();
+    // get_timestamped_snapshot(&max2769_cfg, snapshot_buf, &capture_timestamp);
+    // riotee_wait_cap_charged();
+    // for(int k = 0; k < max2769_cfg.snapshot_size_bytes; k++)
+	  // {
+		//   printf_("%02X\n", snapshot_buf[k]);
+	  // }
 
-    // //For Testpurpose write incrementing numbers in snapshot buffer and take timestamp
-    // riotee_wait_cap_charged();
-    // get_timestamp(&capture_timestamp);
-    // for(int k=0;k<SNAPSHOT_SIZE_BYTES;k++)
-    // {
-    //   snapshot_buf[k] = (uint8_t) k%256;
-    // }
-    // //Take another timestamp and send both timestamps to base station to allow recalculation of snapshot caputre time
-    // riotee_wait_cap_charged();
-    // take_timestamp_and_send_first_frame(&capture_timestamp, &transmit_timestamp, snapshot_id);
-    // //Divide snapshot into several frames and send them one after another
-    // for(uint16_t frame_number=1;frame_number<TOTAL_NUMBER_FRAMES;frame_number++)
-    // {
-    //   riotee_wait_cap_charged();
-    //   send_snapshot_data_frame(snapshot_buf, frame_number, snapshot_id);
-    // }
+    //For Testpurpose write incrementing numbers in snapshot buffer and take timestamp
+    riotee_wait_cap_charged();
+    get_timestamp(&capture_timestamp);
+    for(int k=0;k<SNAPSHOT_SIZE_BYTES;k++)
+    {
+      snapshot_buf[k] = (uint8_t) k%256;
+    }
+    //Take another timestamp and send both timestamps to base station to allow recalculation of snapshot caputre time
+    riotee_wait_cap_charged();
+    take_timestamp_and_send_first_frame(&capture_timestamp, &transmit_timestamp, snapshot_id);
+    //Divide snapshot into several frames and send them one after another
+    for(uint16_t frame_number=1;frame_number<TOTAL_NUMBER_FRAMES;frame_number++)
+    {
+      riotee_wait_cap_charged();
+      send_snapshot_data_frame(snapshot_buf, frame_number, snapshot_id);
+    }
     //Next snapshot gets incremented ID
     snapshot_id++;
   }
