@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "timestamping.h"
 #include "max2769.h"
+#include "riotee_stella.h"
 
 //Define the size of snapshots to be received from max2769 in bytes
 //Snapshot size depends on sampling frequency, snapshot duration and adc resolution
@@ -51,5 +52,6 @@ int get_timestamped_snapshot(const max2769_cfg_t *max2769_cfg, uint8_t *snapshot
 void init_snapshot_transmitter();
 int take_timestamp_and_send_first_frame(timestamp_t *capture_timestamp, timestamp_t *transmit_timestamp, uint16_t snapshot_id);
 int send_snapshot_data_frame(uint8_t *snapshot_buf, uint16_t frame_number, uint16_t snapshot_id);
+int riotee_stella_verified_transmission(int max_retransmissions, riotee_stella_pkt_t *rx_pkt, riotee_stella_pkt_t *tx_pkt);
 
 #endif /* __SNAPSHOT_HANDLER_H_ */
