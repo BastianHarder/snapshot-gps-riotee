@@ -16,7 +16,7 @@ timestamp_t capture_timestamp;
 timestamp_t transmit_timestamp;
 
 //Define Device ID for communication with base station
-const uint32_t dev_id = 0x76543210;
+const uint32_t dev_id = 101;
 
 const static riotee_spic_cfg_t spic_cfg = {.mode = SPIC_MODE0_CPOL0_CPHA0,
                                            .frequency = SPIC_FREQUENCY_K500,
@@ -77,8 +77,8 @@ int main(void) {
     get_timestamp(&capture_timestamp);
     for(int k=0;k<SNAPSHOT_SIZE_BYTES;k++)
     {
-      //snapshot_buf[k] = (uint8_t) k/243;
-      snapshot_buf[k] = 0x00;
+      snapshot_buf[k] = (uint8_t) k/243;
+      //snapshot_buf[k] = 0x00;
     }
     //Take another timestamp and send both timestamps to base station to allow recalculation of snapshot caputre time
     riotee_wait_cap_charged();
