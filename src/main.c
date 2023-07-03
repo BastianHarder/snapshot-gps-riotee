@@ -75,11 +75,9 @@ int main(void) {
     //For Testpurpose write incrementing numbers in snapshot buffer and take timestamp
     riotee_wait_cap_charged();
     get_timestamp(&capture_timestamp);
-    for(int k=0;k<SNAPSHOT_SIZE_BYTES;k++)
-    {
-      snapshot_buf[k] = (uint8_t) k/243;
-      //snapshot_buf[k] = 0x00;
-    }
+    prbs_gen(snapshot_buf, SNAPSHOT_SIZE_BYTES, 0x02);
+    //increment_gen(snapshot_buf, SNAPSHOT_SIZE_BYTES);
+
     //Take another timestamp and send both timestamps to base station to allow recalculation of snapshot caputre time
     riotee_wait_cap_charged();
     take_timestamp_and_send_first_frame(&capture_timestamp, &transmit_timestamp, snapshot_id);

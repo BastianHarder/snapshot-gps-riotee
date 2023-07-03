@@ -55,7 +55,7 @@ int take_timestamp_and_send_first_frame(timestamp_t *capture_timestamp, timestam
 
 int send_snapshot_data_frame(uint8_t *snapshot_buf, uint16_t frame_number, uint16_t snapshot_id)
 {
-    int frame_byte_offset = (int)frame_number * (int)SNAPSHOT_BYTES_PER_FRAME;
+    int frame_byte_offset = (int)(frame_number-1) * (int)SNAPSHOT_BYTES_PER_FRAME;
     //Check that this is NOT the last frame to be sent
     if(frame_number != (TOTAL_NUMBER_FRAMES-1))
     {

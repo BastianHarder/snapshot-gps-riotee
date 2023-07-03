@@ -17,6 +17,7 @@ SRC_FILES = \
   $(PRJ_ROOT)/src/max2769.c \
   $(PRJ_ROOT)/src/snapshot_handler.c \
   $(PRJ_ROOT)/src/spis.c \
-  $(PRJ_ROOT)/src/timestamping.c 
+  $(PRJ_ROOT)/src/timestamping.c \
+  $(PRJ_ROOT)/src/prbs.c 
 
 include $(SDK_ROOT)/Makefile
