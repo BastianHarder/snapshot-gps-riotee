@@ -64,8 +64,8 @@ void turnoff_callback(void) {
 int main(void) {
   for (;;) {
     //Capture a GNSS snapshot and take a timestamp
-    // riotee_wait_cap_charged();
-    // get_timestamped_snapshot(&max2769_cfg, snapshot_buf, &capture_timestamp);
+    riotee_wait_cap_charged();
+    get_timestamped_snapshot(&max2769_cfg, snapshot_buf, &capture_timestamp);
     // riotee_wait_cap_charged();
     // for(int k = 0; k < max2769_cfg.snapshot_size_bytes; k++)
 	  // {
@@ -73,9 +73,9 @@ int main(void) {
 	  // }
 
     //For Testpurpose write incrementing numbers in snapshot buffer and take timestamp
-    riotee_wait_cap_charged();
-    get_timestamp(&capture_timestamp);
-    prbs_gen(snapshot_buf, SNAPSHOT_SIZE_BYTES, 0x02);
+    // riotee_wait_cap_charged();
+    // get_timestamp(&capture_timestamp);
+    //prbs_gen(snapshot_buf, SNAPSHOT_SIZE_BYTES, 0x02);
     //increment_gen(snapshot_buf, SNAPSHOT_SIZE_BYTES);
 
     //Take another timestamp and send both timestamps to base station to allow recalculation of snapshot caputre time
