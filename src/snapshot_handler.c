@@ -18,8 +18,8 @@ int get_timestamped_snapshot(const max2769_cfg_t *max2769_cfg, uint8_t *snapshot
     enable_max2769(max2769_cfg);
     riotee_sleep_ms(1);
     configure_max2769(max2769_cfg);
-    result += get_timestamp(capture_timestamp);
     riotee_sleep_ms(1);
+    result += get_timestamp(capture_timestamp);
     max2769_capture_snapshot(max2769_cfg, snapshot_buf);
     disable_max2769(max2769_cfg);
     return result;

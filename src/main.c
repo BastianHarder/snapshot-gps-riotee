@@ -6,6 +6,7 @@
 #include "max2769.h"
 #include "snapshot_handler.h"
 #include "printf.h"
+#include "prbs.h"
 
 //Global buffer to store gnss snapshot
 uint8_t snapshot_buf[SNAPSHOT_SIZE_BYTES] __VOLATILE_UNINITIALIZED;
@@ -19,7 +20,7 @@ timestamp_t transmit_timestamp;
 const uint32_t dev_id = 101;
 
 const static riotee_spic_cfg_t spic_cfg = {.mode = SPIC_MODE0_CPOL0_CPHA0,
-                                           .frequency = SPIC_FREQUENCY_K500,
+                                           .frequency = SPIC_FREQUENCY_K125,
                                            .pin_cs = PIN_D8,
                                            .pin_sck = PIN_D10,
                                            .pin_copi = PIN_D9,
@@ -76,7 +77,7 @@ int main(void) {
     // riotee_wait_cap_charged();
     // get_timestamp(&capture_timestamp);
     //prbs_gen(snapshot_buf, SNAPSHOT_SIZE_BYTES, 0x02);
-    //increment_gen(snapshot_buf, SNAPSHOT_SIZE_BYTES);
+    // increment_gen(snapshot_buf, SNAPSHOT_SIZE_BYTES);
 
     //Take another timestamp and send both timestamps to base station to allow recalculation of snapshot caputre time
     riotee_wait_cap_charged();

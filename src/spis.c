@@ -95,6 +95,7 @@ int spis_receive(uint8_t *rx_buf, unsigned n_rx)
     taskENTER_CRITICAL();
     //Set cs pin high because it should be idle high
 	nrf_gpio_pin_set(pin_cs_out);
+    riotee_delay_us(1);
     //Enable SPI Slave 2					
 	NRF_SPIS2->ENABLE = (SPIS_ENABLE_ENABLE_Enabled << SPIS_ENABLE_ENABLE_Pos);
     //After Enabling a SPI Slave, the semaphore is automatically given to the CPU. It is released now to enable the spi slave to receive data
